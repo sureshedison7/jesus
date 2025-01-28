@@ -1,0 +1,58 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Pagination from "@components/Pagination.astro";
+import Card from "@components/Card";
+import { SITE } from "@config";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+  page: Page<CollectionEntry<"blog">>;
+}
+
+const { page } = Astro.props;
+
+
+
+import getSortedPosts from "@utils/getSortedPosts";
+import { getCollection } from "astro:content";
+
+import SearchBar from "@components/Search";
+
+
+// Retrieve all published articles
+const postss = await getCollection("blog", ({ data }) => !data.draft);
+const sortedPosts = getSortedPosts(postss);
+
+// List of items to search in
+const searchList = sortedPosts.map(({ data, slug }) => ({
+  title: data.title,
+  description: data.description,
+  data,
+  slug,
+}));
+
+---
+
+<Layout title={`Posts | ${SITE.title}`}>
+  <Header activeNav="posts" />
+  <div class="mx-auto w-full max-w-3xl px-4 pt-4">
+    <SearchBar client:load searchList={searchList} />
+  </div>
+  <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
+    <ul>
+      {
+        page.data.map(({ data, slug }) => (
+          <Card href={`/posts/${slug}/`} frontmatter={data} />
+        ))
+      }
+    </ul>
+  </Main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
