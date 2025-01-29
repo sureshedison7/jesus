@@ -21,18 +21,19 @@ import getSortedPosts from "@utils/getSortedPosts";
 import { getCollection } from "astro:content";
 
 import SearchBar from "@components/Search";
+import Tag from "@components/Tag.astro";
 
 
 // Retrieve all published articles
-const postss = await getCollection("blog", ({ data }) => !data.draft);
+const postss = await getCollection("blog", ({ data }: { data: any }) => !data.draft);
 const sortedPosts = getSortedPosts(postss);
 
 // List of items to search in
-const searchList = sortedPosts.map(({ data, slug }) => ({
+const searchList = sortedPosts.map(({ data, id }) => ({
   title: data.title,
   description: data.description,
   data,
-  slug,
+  id
 }));
 
 ---
@@ -45,8 +46,8 @@ const searchList = sortedPosts.map(({ data, slug }) => ({
   <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
     <ul>
       {
-        page.data.map(({ data, slug }) => (
-          <Card href={`/posts/${slug}/`} frontmatter={data} />
+        page.data.map(({ data, id }) => (
+          <Card href={`/posts/${id}/`} frontmatter={data} />
         ))
       }
     </ul>
