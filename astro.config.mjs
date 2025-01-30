@@ -54,6 +54,10 @@ export default defineConfig({
   },
 
   scopedStyleStrategy: "where",
-  output: 'server',
-  adapter: cloudflare(),
+  
+  adapter: cloudflare({
+    imageService: 'cloudflare'
+ }),
+
+ output: 'server',
 });
