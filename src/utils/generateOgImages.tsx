@@ -1,12 +1,14 @@
-import { Resvg } from "@resvg/resvg-js";
+import sharp from "sharp";
 import { type CollectionEntry } from "astro:content";
 import postOgImage from "./og-templates/post";
 import siteOgImage from "./og-templates/site";
 
-function svgBufferToPngBuffer(svg: string) {
-  const resvg = new Resvg(svg);
-  const pngData = resvg.render();
-  return pngData.asPng();
+async function svgBufferToPngBuffer(svg: string) {
+  const buffer = Buffer.from(svg);
+  const pngBuffer = await sharp(buffer)
+    .png()
+    .toBuffer();
+  return pngBuffer;
 }
 
 export async function generateOgImageForPost(post: CollectionEntry<"blog">) {
