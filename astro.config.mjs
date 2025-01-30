@@ -7,18 +7,30 @@ import remarkCollapse from "remark-collapse";
 import sitemap from "@astrojs/sitemap";
 import { SITE } from "./src/config";
 import mdx from "@astrojs/mdx";
+import sanity from "@sanity/astro";
+
+import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
+
   integrations: [
+    sanity({
+      projectId: 'juew0ziu',
+      dataset: 'production',
+      // Set useCdn to false if you're building statically.
+      useCdn: false,
+      studioBasePath: '/admin',
+    }),
     tailwind({
       applyBaseStyles: false,
     }),
     react(),
     sitemap(),
-    mdx(),
+    mdx()
   ],
+
   markdown: {
     remarkPlugins: [
       remarkToc,
@@ -34,10 +46,14 @@ export default defineConfig({
       wrap: true,
     },
   },
+
   vite: {
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
     },
   },
+
   scopedStyleStrategy: "where",
+  output: 'server',
+  adapter: cloudflare(),
 });

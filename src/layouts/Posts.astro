@@ -15,14 +15,10 @@ export interface Props {
 
 const { page } = Astro.props;
 
-
-
 import getSortedPosts from "@utils/getSortedPosts";
 import { getCollection } from "astro:content";
 
 import SearchBar from "@components/Search";
-import Tag from "@components/Tag.astro";
-
 
 // Retrieve all published articles
 const postss = await getCollection("blog", ({ data }: { data: any }) => !data.draft);
